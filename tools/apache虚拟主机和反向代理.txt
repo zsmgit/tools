@@ -1,0 +1,53 @@
+vue 打包：路径设置
+config----index.js ---build:
+
+assetsRoot: path.resolve(__dirname, '../dist'),
+assetsSubDirectory: 'static',
+assetsPublicPath: "/",
+
+router-------new Router--------mode:'history',base不设置
+
+虚拟主机：
+
+DocumentRoot:---------D:/weixin/dist，dist的绝对路径设为根路径-----------在dist下index.html平级，放.htaccess文件
+
+
+--------------.htaccess文件内容---------------
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+
+反向代理：在同一个虚拟主机，request off
+proxyPass /api/ http://localhost:3000/
+proxyReverse /api/ http://localhost:3000/
+
+
+
+<VirtualHost *:80>
+    ServerAdmin ebmaster@XXX.com
+    DocumentRoot "D:/wuyanweixin/dist"
+	<Directory "D:/wuyanweixin/dist">
+      Options Indexes FollowSymLinks
+	  AllowOverride All    
+	  Order allow,deny
+	  Allow from all
+    </Directory>
+    ServerName XXX.com:80
+    ServerAlias YYYY
+    ErrorLog "logs/localhost-error_log"
+ProxyRequests off
+    <Location />
+        ProxyPass  http://localhost:3000/
+	ProxyPassReverse   http://localhost:3000/
+    </Location>
+</VirtualHost>
+
+
+
